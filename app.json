@@ -1,0 +1,44 @@
+{
+  "id": "7d35eceb-74f3-4115-a15c-26bd1bf7c8f1",
+  "name": "GLA Json Builder",
+  "publisher": "Json Builder",
+  "version": "1.0.0.0",
+  "brief": "",
+  "description": "",
+  "privacyStatement": "",
+  "EULA": "",
+  "help": "",
+  "url": "",
+  "logo": "",
+  "dependencies": [],
+  "screenshots": [],
+  "platform": "1.0.0.0",
+  "application": "22.0.0.0",
+  "idRanges": [
+    {
+      "from": 380000,
+      "to": 380100
+    }
+  ],
+  "resourceExposurePolicy": {
+      "allowDebugging": true,
+      "allowDownloadingSource": true,
+      "includeSourceInSymbolFile": true
+  },
+  "target": "Cloud",
+  "supportedLocales": [
+      "en-US"
+  ],
+  "runtime":  "10.0",
+  "features": [
+      "TranslationFile",
+      "GenerateCaptions"
+  ],
+  "suppressWarnings": [
+      "AA0217",
+      "AS0103"
+  ],
+  "preprocessorSymbols": [
+      "test"
+  ]
+}
