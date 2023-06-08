@@ -38,4 +38,39 @@ codeunit 380000 "GLA JB Json Structure Mgt."
     begin
 
     end;
+
+    /// <summary>
+    /// ValidateTblJsonStructureMapOnInsert.
+    /// </summary>
+    /// <param name="JsonStructureMap">VAR Record "GLA JB Json Structure Map".</param>
+    procedure ValidateTblJsonStructureMapOnInsert(var JsonStructureMap: Record "GLA JB Json Structure Map")
+    begin
+
+    end;
+
+    /// <summary>
+    /// ValidateTblJsonStructureMapOnModify.
+    /// </summary>
+    /// <param name="JsonStructureMap">VAR Record "GLA JB Json Structure Map".</param>
+    procedure ValidateTblJsonStructureMapOnModify(var JsonStructureMap: Record "GLA JB Json Structure Map")
+    begin
+
+    end;
+
+    /// <summary>
+    /// ValidateTblJsonStructureMapOnDelete.
+    /// </summary>
+    /// <param name="JsonStructureMap">VAR Record "GLA JB Json Structure Map".</param>
+    procedure ValidateTblJsonStructureMapOnDelete(var JsonStructureMap: Record "GLA JB Json Structure Map")
+    begin
+    end;
+
+    /// <summary>
+    /// ValidateTblJsonStructureMapOnRename.
+    /// </summary>
+    /// <param name="JsonStructureMap">VAR Record "GLA JB Json Structure Map".</param>
+    procedure ValidateTblJsonStructureMapOnRename(var JsonStructureMap: Record "GLA JB Json Structure Map")
+    begin
+
+    end;
 }

@@ -21,7 +21,7 @@ table 380000 "GLA JB Json Structure"
             Caption = 'Description';
             DataClassification = CustomerContent;
         }
-        field(3; Status; Integer)
+        field(3; Status; Enum "GLA JB Status")
         {
             Caption = 'Status';
             DataClassification = CustomerContent;
@@ -29,7 +29,9 @@ table 380000 "GLA JB Json Structure"
         field(100; "Count Node"; Integer)
         {
             Caption = 'Count Node';
-            DataClassification = CustomerContent;
+            Editable = false;
+            FieldClass = FlowField;
+            CalcFormula = count("GLA JB Json Structure Map" where("Structure Code" = field("Code")));
         }
     }
     keys
