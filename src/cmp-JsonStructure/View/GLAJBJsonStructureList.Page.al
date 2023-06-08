@@ -1,3 +1,7 @@
+/// <summary>
+/// Page GLA JB Json Structure List (ID 380000).
+/// Component: Json Structure
+/// </summary>
 page 380000 "GLA JB Json Structure List"
 {
     ApplicationArea = All;

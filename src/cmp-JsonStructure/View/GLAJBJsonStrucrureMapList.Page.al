@@ -16,13 +16,19 @@ page 380001 "GLA JB Json Strucrure Map List"
         {
             repeater(General)
             {
+                IndentationColumn = Rec."Indent Level";
+                IndentationControls = "Key", "Value";
+                //ShowAsTree = true;
+
                 field("Structure Code"; Rec."Structure Code")
                 {
                     ToolTip = 'Specifies the value of the Structure Code field.';
+                    Visible = false;
                 }
                 field("Line No"; Rec."Line No")
                 {
                     ToolTip = 'Specifies the value of the Line No field.';
+                    Visible = false;
                 }
                 field("Key"; Rec."Key")
                 {
@@ -32,7 +38,7 @@ page 380001 "GLA JB Json Strucrure Map List"
                 {
                     ToolTip = 'Specifies the value of the Value field.';
                 }
-                field("Parrent Key"; Rec."Parrent Key")
+                field("Parrent Key"; Rec."Parent Key")
                 {
                     ToolTip = 'Specifies the value of the Parrent Key field.';
                 }
@@ -40,7 +46,7 @@ page 380001 "GLA JB Json Strucrure Map List"
                 {
                     ToolTip = 'Specifies the value of the Status field.';
                 }
-                field(Indent; Rec.Indent)
+                field(Indent; Rec."Indent Level")
                 {
                     ToolTip = 'Specifies the value of the Indent field.';
                 }

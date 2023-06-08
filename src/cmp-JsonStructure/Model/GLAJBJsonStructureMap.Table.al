@@ -22,7 +22,6 @@ table 380001 "GLA JB Json Structure Map"
         {
             Caption = 'Line No';
             DataClassification = CustomerContent;
-            AutoIncrement = true;
         }
         field(3; "Key"; Text[50])
         {
@@ -33,18 +32,31 @@ table 380001 "GLA JB Json Structure Map"
         {
             Caption = 'Value';
             DataClassification = CustomerContent;
+            trigger OnValidate()
+            begin
+                mJsonStructure.ValidateFldJsonStructureMapOnValue(Rec);
+            end;
         }
-        field(5; "Parrent Key"; Text[50])
+        field(5; "Parent Key"; Text[50])
         {
             Caption = 'Parrent Key';
             DataClassification = CustomerContent;
+            trigger OnValidate()
+            begin
+                mJsonStructure.ValidateFldJsonStructureMapOnParrentKey(Rec);
+            end;
         }
-        field(6; Status; Enum "GLA JB Status")
+        field(6; "Has Children"; Boolean)
+        {
+            Caption = 'Has Children';
+            DataClassification = CustomerContent;
+        }
+        field(7; Status; Enum "GLA JB Status")
         {
             Caption = 'Status';
             DataClassification = CustomerContent;
         }
-        field(7; Indent; Integer)
+        field(8; "Indent Level"; Integer)
         {
             Caption = 'Indent';
             DataClassification = CustomerContent;
@@ -52,14 +64,19 @@ table 380001 "GLA JB Json Structure Map"
     }
     keys
     {
-        key(PK; "Structure Code")
+        key(PK; "Structure Code", "Line No")
         {
             Clustered = true;
+        }
+
+        key(UK1; "Key", "Parent Key")
+        {
+            Unique = true;
         }
     }
     fieldgroups
     {
-        fieldgroup(DropDown; "Key", "Value", "Parrent Key")
+        fieldgroup(DropDown; "Key", "Value", "Parent Key")
         {
 
         }
@@ -67,6 +84,53 @@ table 380001 "GLA JB Json Structure Map"
 
     var
         mJsonStructure: Codeunit "GLA JB Json Structure Mgt.";
+
+    /// <summary>
+    /// UpdateIndentation.
+    /// </summary>
+    procedure UpdateIndentation()
+    var
+        Parent: Record "GLA JB Json Structure Map";
+    begin
+        if Parent.Get(Rec."Parent Key") then
+            UpdateIndentationTree(Parent."Indent Level" + 1)
+        else
+            UpdateIndentationTree(0);
+    end;
+
+    /// <summary>
+    /// UpdateIndentationTree.
+    /// </summary>
+    /// <param name="Level">Integer.</param>
+    procedure UpdateIndentationTree(Level: Integer)
+    var
+        JsonStructureMap: Record "GLA JB Json Structure Map";
+    begin
+        Rec."Indent Level" := Level;
+
+        JsonStructureMap.Reset();
+        JsonStructureMap.SetRange("Parent Key", Rec."Key");
+        if JsonStructureMap.FindSet(true) then
+            repeat
+                JsonStructureMap.UpdateIndentationTree(Level + 1);
+                JsonStructureMap."Has Children" := JsonStructureMap.HasChildren();
+                JsonStructureMap.Modify(true);
+            until JsonStructureMap.Next() = 0;
+    end;
+
+    /// <summary>
+    /// HasChildren.
+    /// </summary>
+    /// <returns>Return value of type Boolean.</returns>
+    procedure HasChildren(): Boolean
+    var
+        JsonStructureMap: Record "GLA JB Json Structure Map";
+    begin
+        JsonStructureMap.Reset();
+        JsonStructureMap.SetCurrentKey("Parent Key");
+        JsonStructureMap.SetRange("Parent Key", Rec."Key");
+        exit(not JsonStructureMap.IsEmpty)
+    end;
 
     trigger OnInsert()
     var
