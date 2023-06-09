@@ -18,11 +18,10 @@ table 380001 "GLA JB Json Structure Map"
             TableRelation = "GLA JB Json Structure"."Code";
             ValidateTableRelation = true;
         }
-        field(2; "Line No"; Integer)
+        field(2; "Line No."; Integer)
         {
             Caption = 'Line No';
             DataClassification = CustomerContent;
-            AutoIncrement = true;
         }
         field(3; "Key"; Text[50])
         {
@@ -33,33 +32,56 @@ table 380001 "GLA JB Json Structure Map"
         {
             Caption = 'Value';
             DataClassification = CustomerContent;
+            trigger OnValidate()
+            begin
+                mJsonStructure.ValidateFldJsonStructureMapOnValue(Rec);
+            end;
         }
-        field(5; "Parrent Key"; Text[50])
+        field(5; "Parent Line No."; Integer)
         {
-            Caption = 'Parrent Key';
+            Caption = 'Parent Line No.';
+            DataClassification = CustomerContent;
+            TableRelation = "GLA JB Json Structure Map"."Line No." where("Structure Code" = field("Structure Code"));
+        }
+        field(6; "Has Children"; Boolean)
+        {
+            Caption = 'Has Children';
             DataClassification = CustomerContent;
         }
-        field(6; Status; Enum "GLA JB Status")
+        field(7; Status; Enum "GLA JB Status")
         {
             Caption = 'Status';
             DataClassification = CustomerContent;
         }
-        field(7; Indent; Integer)
+        field(8; "Indent Level"; Integer)
         {
             Caption = 'Indent';
             DataClassification = CustomerContent;
         }
+
+        field(100; "Parent Key"; Text[50])
+        {
+            Caption = 'Parrent Key';
+            Editable = false;
+            FieldClass = FlowField;
+            CalcFormula = lookup("GLA JB Json Structure Map"."Key" where("Structure Code" = field("Structure Code"), "Line No." = field("Parent Line No.")));
+        }
     }
     keys
     {
-        key(PK; "Structure Code")
+        key(PK; "Structure Code", "Line No.")
         {
             Clustered = true;
+        }
+
+        key(UK1; "Line No.", "Parent Line No.")
+        {
+            Unique = true;
         }
     }
     fieldgroups
     {
-        fieldgroup(DropDown; "Key", "Value", "Parrent Key")
+        fieldgroup(DropDown; "Line No.", "Key", "Value", "Parent Key")
         {
 
         }
