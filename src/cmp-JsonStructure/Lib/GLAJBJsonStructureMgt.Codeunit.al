@@ -48,7 +48,7 @@ codeunit 380000 "GLA JB Json Structure Mgt."
     /// <param name="JsonStructureMap">VAR Record "GLA JB Json Structure Map".</param>
     procedure ValidateTblJsonStructureMapOnInsert(var JsonStructureMap: Record "GLA JB Json Structure Map")
     begin
-        JsonStructureMap."Line No" := sJsonStructure.GetJsonStructureMapLastLineNo(JsonStructureMap."Structure Code") + 1;
+        JsonStructureMap."Line No." := sJsonStructure.GetJsonStructureMapLastLineNo(JsonStructureMap."Structure Code") + 1;
     end;
 
     /// <summary>
@@ -85,19 +85,5 @@ codeunit 380000 "GLA JB Json Structure Mgt."
     begin
         if JsonStructureMap."Value" <> '' then
             JsonStructureMap.TestField("Has Children", false);
-    end;
-    /// <summary>
-    /// ValidateFldJsonStructureMapOfParrentKey.
-    /// </summary>
-    /// <param name="JsonStructureMap">VAR Record "GLA JB Json Structure Map".</param>
-    procedure ValidateFldJsonStructureMapOnParrentKey(var JsonStructureMap: Record "GLA JB Json Structure Map")
-    var
-        xJsonStructureMap: Record "GLA JB Json Structure Map";
-    begin
-        xJsonStructureMap.Get(JsonStructureMap."Structure Code", JsonStructureMap."Line No", JsonStructureMap."Key");
-        if xJsonStructureMap."Parent Key" = JsonStructureMap."Parent Key" then
-            exit;
-
-        JsonStructureMap.UpdateIndentation();
     end;
 }
