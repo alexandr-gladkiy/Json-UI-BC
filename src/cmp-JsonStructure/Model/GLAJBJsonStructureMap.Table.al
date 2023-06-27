@@ -79,6 +79,10 @@ table 380001 "GLA JB Json Structure Map"
         {
             Unique = true;
         }
+        key(Key1; "Structure Code", "Key", "Parent Key")
+        {
+
+        }
     }
     fieldgroups
     {

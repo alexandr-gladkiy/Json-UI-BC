@@ -35,4 +35,37 @@ page 380000 "GLA JB Json Structure List"
             }
         }
     }
+
+    actions
+    {
+        area(Processing)
+        {
+            group(Json)
+            {
+                Caption = 'Json';
+                action(ExportJson)
+                {
+                    Caption = 'Export';
+                    Image = Export;
+                    trigger OnAction()
+                    begin
+                        sJsonStructure.CreateJsonAsFile(Rec."Code")
+                    end;
+                }
+
+                action(ImportJson)
+                {
+                    Caption = 'Import';
+                    Image = Import;
+                    trigger OnAction()
+                    begin
+                        // TODO: Create function create structure from file
+                    end;
+                }
+            }
+
+        }
+    }
+    var
+        sJsonStructure: Codeunit "GLA JB Json Structure Service";
 }
