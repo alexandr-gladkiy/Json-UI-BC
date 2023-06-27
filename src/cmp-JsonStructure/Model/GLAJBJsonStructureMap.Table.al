@@ -11,24 +11,24 @@ table 380001 "GLA JB Json Structure Map"
 
     fields
     {
-        field(1; "Structure Code"; Code[30])
+        field(10; "Structure Code"; Code[30])
         {
             Caption = 'Structure Code';
             DataClassification = CustomerContent;
             TableRelation = "GLA JB Json Structure"."Code";
             ValidateTableRelation = true;
         }
-        field(2; "Line No."; Integer)
+        field(20; "Line No."; Integer)
         {
             Caption = 'Line No';
             DataClassification = CustomerContent;
         }
-        field(3; "Key"; Text[50])
+        field(30; "Key"; Text[50])
         {
             Caption = 'Key';
             DataClassification = CustomerContent;
         }
-        field(4; "Value"; Text[1024])
+        field(40; "Value"; Text[1024])
         {
             Caption = 'Value';
             DataClassification = CustomerContent;
@@ -37,34 +37,35 @@ table 380001 "GLA JB Json Structure Map"
                 mJsonStructure.ValidateFldJsonStructureMapOnValue(Rec);
             end;
         }
-        field(5; "Parent Line No."; Integer)
+        field(50; "Data Type"; Enum "GLA JB Data Type")
         {
-            Caption = 'Parent Line No.';
+            Caption = 'Data Type';
             DataClassification = CustomerContent;
-            TableRelation = "GLA JB Json Structure Map"."Line No." where("Structure Code" = field("Structure Code"));
         }
-        field(6; "Has Children"; Boolean)
+        field(60; "Parent Key"; Text[50])
+        {
+            Caption = 'Parrent Key';
+            Editable = false;
+        }
+        field(70; "Has Children"; Boolean)
         {
             Caption = 'Has Children';
             DataClassification = CustomerContent;
         }
-        field(7; Status; Enum "GLA JB Status")
+        field(80; Status; Enum "GLA JB Status")
         {
             Caption = 'Status';
             DataClassification = CustomerContent;
         }
-        field(8; "Indent Level"; Integer)
+        field(90; "Indent Level"; Integer)
         {
             Caption = 'Indent';
             DataClassification = CustomerContent;
         }
-
-        field(100; "Parent Key"; Text[50])
+        field(100; "Sorting Order"; Integer)
         {
-            Caption = 'Parrent Key';
-            Editable = false;
-            FieldClass = FlowField;
-            CalcFormula = lookup("GLA JB Json Structure Map"."Key" where("Structure Code" = field("Structure Code"), "Line No." = field("Parent Line No.")));
+            Caption = 'Sorting Order';
+            DataClassification = CustomerContent;
         }
     }
     keys
@@ -74,7 +75,7 @@ table 380001 "GLA JB Json Structure Map"
             Clustered = true;
         }
 
-        key(UK1; "Line No.", "Parent Line No.")
+        key(UK1; "Key", "Parent Key")
         {
             Unique = true;
         }

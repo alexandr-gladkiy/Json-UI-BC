@@ -37,6 +37,10 @@ page 380001 "GLA JB Json Strucrure Map List"
                 {
                     ToolTip = 'Specifies the value of the Value field.';
                 }
+                field("Data Type"; Rec."Data Type")
+                {
+                    ToolTip = 'Specifies the value of the Data Type field.';
+                }
                 field("Parent Key"; Rec."Parent Key")
                 {
                     ToolTip = 'Specifies the value of the Parrent Key field.';
@@ -101,8 +105,7 @@ page 380001 "GLA JB Json Strucrure Map List"
             if Page.RunModal(Page::"GLA JB Json Strucrure Map List", JsonStructureMap) <> Action::OK then
                 exit;
 
-            Rec."Parent Line No." := JsonStructureMap."Line No.";
-            Rec.CalcFields("Parent Key");
+            Rec."Parent Key" := JsonStructureMap."Parent Key";
         end;
     end;
 }

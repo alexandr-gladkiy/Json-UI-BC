@@ -1,0 +1,16 @@
+{
+    "containerResultPath":  "C:\\ProgramData\\BcContainerHelper",
+    "launchConfigName":  "Local Docker SSL",
+    "securePassword":  "01000000d08c9ddf0115d1118c7a00c04fc297eb0100000012ab51b4ad1bc74080d8857682529c4800000000020000000000106600000001000020000000ed2b0722789fdfb28f85764d8eafe27f5d3e05855e17aa5d0a39a8dabaa5f7d9000000000e8000000002000020000000eccd203c25a2ce2214ebfad73064d4924a5d29a92d1ed68d4cd8e6fffdbc4469100000006c9ec18365c23bb0815c122c1377832c4000000012d260a5960f12e423426032a91a7146afdec355ba6003e96c2230c66e2281f650971616b750825e44281b5deecb2b5e15f1cd1e839011991f11d4f5570345ff",
+    "userName":  "admin",
+    "companyName":  "My Company",
+    "testSuiteName":  "",
+    "vmUserName":  "",
+    "vmSecurePassword":  "",
+    "remoteContainerName":  "",
+    "dockerHost":  "",
+    "newPSSessionOptions":  "",
+    "testRunnerServiceUrl":  "http://BC-TEST:7048/BC/ODataV4/TestRunner?company=My Company\u0026tenant=default",
+    "codeCoveragePath":  ".//.altestrunner//codecoverage.json",
+    "culture":  "en-US"
+}

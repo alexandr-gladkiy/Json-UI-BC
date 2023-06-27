@@ -1,0 +1,3 @@
+Status Code 422 : Unprocessable Entity
+A duplicate package ID is detected. Cannot publish an extension with packageId: '7bab91dc-92df-4463-a944-6c05aa46b158', appId: '7d35eceb-74f3-4115-a15c-26bd1bf7c8f1', name: 'GLA Json Builder', publisher: 'Json Builder' and version: '1.0.0.0', because the same package ID already exists in a published extension with packageId: '7bab91dc-92df-4463-a944-6c05aa46b158', appId: '7d35eceb-74f3-4115-a15c-26bd1bf7c8f1', name: 'GLA Json Builder', publisher: 'Json Builder' and version: '1.0.0.0'.
+
