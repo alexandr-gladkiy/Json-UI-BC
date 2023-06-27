@@ -48,7 +48,6 @@ page 380001 "GLA JB Json Strucrure Map List"
                     trigger OnDrillDown()
                     begin
                         LookupParentKey();
-                        CurrPage.Update(false);
                     end;
                 }
                 field(Status; Rec.Status)
@@ -102,10 +101,9 @@ page 380001 "GLA JB Json Strucrure Map List"
     begin
         if sJsonStructure.GetSetOfJsonStructureMapByStructureCode(Rec."Structure Code", JsonStructureMap) then begin
             JsonStructureMap.SetFilter("Line No.", '<>%1', Rec."Line No.");
-            if Page.RunModal(Page::"GLA JB Json Strucrure Map List", JsonStructureMap) <> Action::OK then
-                exit;
-
-            Rec."Parent Key" := JsonStructureMap."Parent Key";
+            if Page.RunModal(Page::"GLA JB Json Strucrure Map List", JsonStructureMap) = Action::LookupOK then begin
+                Rec."Parent Key" := JsonStructureMap."Key";
+            end;
         end;
     end;
 }

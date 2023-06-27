@@ -45,7 +45,7 @@ table 380001 "GLA JB Json Structure Map"
         field(60; "Parent Key"; Text[50])
         {
             Caption = 'Parrent Key';
-            Editable = false;
+            DataClassification = CustomerContent;
         }
         field(70; "Has Children"; Boolean)
         {
