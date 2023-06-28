@@ -6,35 +6,39 @@ enum 380001 "GLA JB Data Type"
 {
     Extensible = true;
 
-    value(0; "Integer")
+    value(0; "None")
+    {
+        Caption = 'None';
+    }
+    value(1; "Integer")
     {
         Caption = 'Integer';
     }
-    value(1; "Biginteger")
+    value(2; "Biginteger")
     {
         Caption = 'Biginteger';
     }
-    value(2; "Decimal")
+    value(3; "Decimal")
     {
         Caption = 'Decimal';
     }
-    value(3; "Code")
+    value(4; "Code")
     {
         Caption = 'Code';
     }
-    value(4; "Text")
+    value(5; "Text")
     {
         Caption = 'Text';
     }
-    value(5; "Boolean")
+    value(6; "Boolean")
     {
         Caption = 'Boolean';
     }
-    value(6; "Option")
+    value(7; "Option")
     {
         Caption = 'Option';
     }
-    value(7; "Enum")
+    value(8; "Enum")
     {
         Caption = 'Enum';
     }

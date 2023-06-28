@@ -81,18 +81,29 @@ codeunit 380000 "GLA JB Json Structure Mgt."
     /// ValidateFldJsonStructureMapOnParentKey.
     /// </summary>
     /// <param name="JsonStructureMap">VAR Record "GLA JB Json Structure Map".</param>
-    procedure ValidateFldJsonStructureMapOnParentKey(var JsonStructureMap: Record "GLA JB Json Structure Map")
+    /// <param name="xJsonStructureMap">Record "GLA JB Json Structure Map".</param>
+    procedure ValidateFldJsonStructureMapOnParentKey(var JsonStructureMap: Record "GLA JB Json Structure Map"; xJsonStructureMap: Record "GLA JB Json Structure Map")
     var
         ParentJsonStructureMap: Record "GLA JB Json Structure Map";
     begin
-        if ParentJsonStructureMap."Parent Key" = '' then begin
-            ParentJsonStructureMap."Line No." := 0;
+        if JsonStructureMap."Parent Key" = xJsonStructureMap."Parent Key" then
+            exit;
+
+        if JsonStructureMap."Parent Key" = '' then begin
+            JsonStructureMap."Parent Line No." := 0;
+
+            sJsonStructure.SetStructureMap(JsonStructureMap."Structure Code", xJsonStructureMap."Parent Line No.");
+
+            ParentJsonStructureMap.Get(JsonStructureMap."Structure Code", xJsonStructureMap."Parent Line No.");
+            ParentJsonStructureMap.Validate("Has Children", sJsonStructure.GetCountChildren() > 1);
+            ParentJsonStructureMap.Modify(true);
             exit;
         end;
 
         ParentJsonStructureMap.Get(JsonStructureMap."Structure Code", JsonStructureMap."Parent Line No.");
         ParentJsonStructureMap.Validate("Has Children", true);
-        ParentJsonStructureMap.Value := '';
+        ParentJsonStructureMap.Validate("Value", '');
+        ParentJsonStructureMap.Validate("Data Type", ParentJsonStructureMap."Data Type"::"None");
         ParentJsonStructureMap.Modify(true);
     end;
     /// <summary>

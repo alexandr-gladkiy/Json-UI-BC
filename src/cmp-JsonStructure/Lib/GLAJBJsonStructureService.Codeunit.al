@@ -44,6 +44,17 @@ codeunit 380001 "GLA JB Json Structure Service"
     end;
 
     /// <summary>
+    /// GetKey.
+    /// </summary>
+    /// <returns>Return value of type Text[50].</returns>
+    procedure GetKey(): Text[50]
+    begin
+        if not HasJsonStructureMap then
+            Error(ErrorJsonStructureMapIsNotSetUp);
+        exit(GlobalJsonStructureMap."Key");
+    end;
+
+    /// <summary>
     /// GetSetOfJsonStructureMapByStructureCode.
     /// </summary>
     /// <param name="StructureCode">Code[30].</param>
@@ -90,6 +101,35 @@ codeunit 380001 "GLA JB Json Structure Service"
     end;
 
     /// <summary>
+    /// IsStructureMapHasChildren.
+    /// </summary>
+    /// <returns>Return value of type Boolean.</returns>
+    procedure IsStructureMapHasChildren(): Boolean
+    var
+        JsonStructureMap: Record "GLA JB Json Structure Map";
+    begin
+        if not HasJsonStructureMap then
+            Error(ErrorJsonStructureMapIsNotSetUp);
+
+        exit(GetSetOfJsonStructureMapByParentKey(GlobalJsonStructureMap."Structure Code", GlobalJsonStructureMap."Key", JsonStructureMap));
+    end;
+
+    /// <summary>
+    /// GetCountChildren.
+    /// </summary>
+    /// <returns>Return value of type Integer.</returns>
+    procedure GetCountChildren(): Integer
+    var
+        JsonStructureMap: Record "GLA JB Json Structure Map";
+    begin
+        if not HasJsonStructureMap then
+            Error(ErrorJsonStructureMapIsNotSetUp);
+
+        GetSetOfJsonStructureMapByParentKey(GlobalJsonStructureMap."Structure Code", GlobalJsonStructureMap."Key", JsonStructureMap);
+        exit(JsonStructureMap.Count);
+    end;
+
+    /// <summary>
     /// CreateJsonAsFile.
     /// </summary>
     /// <param name="JsonStructureCode">Code[30].</param>
@@ -101,6 +141,9 @@ codeunit 380001 "GLA JB Json Structure Service"
         iStream: InStream;
         FileName: Text;
     begin
+        if JsonStructureCode = '' then
+            exit;
+
         Json := CreateJson(JsonStructureCode);
         TempBlob.CreateOutStream(oStream);
         Json.WriteTo(oStream);
@@ -108,6 +151,22 @@ codeunit 380001 "GLA JB Json Structure Service"
 
         FileName := StrSubstNo('JsonStructure_%1.txt', JsonStructureCode);
         DownloadFromStream(iStream, '', '', '', FileName);
+    end;
+
+    /// <summary>
+    /// CreateJsonAsText.
+    /// </summary>
+    /// <param name="JsonStructureCode">Code[30].</param>
+    /// <returns>Return variable JsonTxt of type Text.</returns>
+    procedure CreateJsonAsText(JsonStructureCode: Code[30]) JsonTxt: Text
+    var
+        Json: JsonObject;
+    begin
+        if JsonStructureCode = '' then
+            exit;
+
+        Json := CreateJson(JsonStructureCode);
+        Json.WriteTo(JsonTxt);
     end;
 
     local procedure CreateJson(JsonStructureCode: Code[30]) MainJsonObj: JsonObject

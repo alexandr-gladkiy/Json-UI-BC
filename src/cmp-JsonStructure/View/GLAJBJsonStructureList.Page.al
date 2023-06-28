@@ -43,9 +43,18 @@ page 380000 "GLA JB Json Structure List"
             group(Json)
             {
                 Caption = 'Json';
-                action(ExportJson)
+                action("Show To Message")
                 {
-                    Caption = 'Export';
+                    Caption = 'Show To Message';
+                    Image = Export;
+                    trigger OnAction()
+                    begin
+                        Message(sJsonStructure.CreateJsonAsText(Rec."Code"))
+                    end;
+                }
+                action("Export To File")
+                {
+                    Caption = 'Export To File';
                     Image = Export;
                     trigger OnAction()
                     begin
@@ -53,9 +62,9 @@ page 380000 "GLA JB Json Structure List"
                     end;
                 }
 
-                action(ImportJson)
+                action("Import From File")
                 {
-                    Caption = 'Import';
+                    Caption = 'Import From File';
                     Image = Import;
                     trigger OnAction()
                     begin
