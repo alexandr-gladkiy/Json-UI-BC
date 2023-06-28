@@ -1,5 +1,6 @@
 /// <summary>
 /// Page GLA JB Json Builder Card (ID 380003).
+/// Component: Json Structure/// 
 /// </summary>
 page 380003 "GLA JB Json Structure Card"
 {
@@ -15,14 +16,9 @@ page 380003 "GLA JB Json Structure Card"
             group(General)
             {
                 Caption = 'General';
-
                 field("Code"; Rec."Code")
                 {
                     ToolTip = 'Specifies the value of the Code field.';
-                }
-                field("Count Node"; Rec."Count Node")
-                {
-                    ToolTip = 'Specifies the value of the Count Node field.';
                 }
                 field(Description; Rec.Description)
                 {
@@ -32,14 +28,53 @@ page 380003 "GLA JB Json Structure Card"
                 {
                     ToolTip = 'Specifies the value of the Status field.';
                 }
-            }
-            usercontrol(url; UrlHack)
-            {
-                trigger GetApiKey(ApiKey: Text)
-                begin
-                    Message(ApiKey);
-                end;
+                field("Count Node"; Rec."Count Node")
+                {
+                    ToolTip = 'Specifies the value of the Count Node field.';
+                }
             }
         }
     }
+    actions
+    {
+        area(Processing)
+        {
+            group(Json)
+            {
+                Caption = 'Json';
+                action("Show To Message")
+                {
+                    Caption = 'Show To Message';
+                    Image = Export;
+                    trigger OnAction()
+                    begin
+                        Message(sJsonStructure.CreateJsonAsText(Rec."Code"))
+                    end;
+                }
+                action("Export To File")
+                {
+                    Caption = 'Export To File';
+                    Image = Export;
+                    trigger OnAction()
+                    begin
+                        sJsonStructure.CreateJsonAsFile(Rec."Code")
+                    end;
+                }
+
+                action("Import From File")
+                {
+                    Caption = 'Import From File';
+                    Image = Import;
+                    trigger OnAction()
+                    begin
+                        // TODO: Create function create structure from file
+                    end;
+                }
+            }
+
+        }
+    }
+
+    var
+        sJsonStructure: Codeunit "GLA JB Json Structure Service";
 }

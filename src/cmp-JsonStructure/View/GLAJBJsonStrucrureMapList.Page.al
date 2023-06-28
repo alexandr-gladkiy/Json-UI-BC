@@ -55,6 +55,12 @@ page 380001 "GLA JB Json Strucrure Map List"
                         CurrPage.Update(false);
                     end;
                 }
+                field("Parent Line No."; Rec."Parent Line No.")
+                {
+                    ToolTip = 'Specifies the value of the "Parent Line No." field.';
+                    Editable = false;
+                    Visible = false;
+                }
                 field(Status; Rec.Status)
                 {
                     ToolTip = 'Specifies the value of the Status field.';
@@ -70,8 +76,54 @@ page 380001 "GLA JB Json Strucrure Map List"
             }
         }
     }
+    actions
+    {
+        area(Processing)
+        {
+            group(Json)
+            {
+                Caption = 'Json';
+                Visible = IsActionGroupJsonVisible;
+                action("Show To Message")
+                {
+                    Caption = 'Show To Message';
+                    Image = Export;
+                    trigger OnAction()
+                    begin
+                        Message(sJsonStructure.CreateJsonAsText(Rec.GetFilter("Structure Code")))
+                    end;
+                }
+                action("Export To File")
+                {
+                    Caption = 'Export To File';
+                    Image = Export;
+                    trigger OnAction()
+                    begin
+                        sJsonStructure.CreateJsonAsFile(Rec.GetFilter("Structure Code"));
+                    end;
+                }
+
+                action("Import From File")
+                {
+                    Caption = 'Import From File';
+                    Image = Import;
+                    trigger OnAction()
+                    begin
+                        // TODO: Create function create structure from file
+                    end;
+                }
+            }
+
+        }
+    }
     var
         sJsonStructure: Codeunit "GLA JB Json Structure Service";
+        IsActionGroupJsonVisible: Boolean;
+
+    trigger OnOpenPage()
+    begin
+        IsActionGroupJsonVisible := Rec.GetFilter("Structure Code") <> '';
+    end;
 
     local procedure LookupParentKey()
     var
@@ -80,8 +132,8 @@ page 380001 "GLA JB Json Strucrure Map List"
         if sJsonStructure.GetSetOfJsonStructureMap(Rec."Structure Code", JsonStructureMap) then begin
             JsonStructureMap.SetFilter("Line No.", '<>%1', Rec."Line No.");
             if Page.RunModal(Page::"GLA JB Json Strucrure Map List", JsonStructureMap) = Action::LookupOK then begin
-                Rec."Parent Key" := JsonStructureMap."Key";
-                Rec."Parent Line No." := JsonStructureMap."Line No.";
+                Rec.Validate("Parent Line No.", JsonStructureMap."Line No.");
+                Rec.Validate("Parent Key", JsonStructureMap."Key");
             end;
         end;
     end;

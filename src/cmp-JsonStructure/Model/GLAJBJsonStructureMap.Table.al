@@ -52,7 +52,7 @@ table 380001 "GLA JB Json Structure Map"
             DataClassification = CustomerContent;
             trigger OnValidate()
             begin
-                mJsonStructure.ValidateFldJsonStructureMapOnParentKey(Rec);
+                mJsonStructure.ValidateFldJsonStructureMapOnParentKey(Rec, xRec);
             end;
         }
         field(61; "Parent Line No."; Integer)
@@ -64,6 +64,7 @@ table 380001 "GLA JB Json Structure Map"
         {
             Caption = 'Has Children';
             DataClassification = CustomerContent;
+            Editable = false;
         }
         field(80; Status; Enum "GLA JB Status")
         {
