@@ -1,10 +1,10 @@
 /// <summary>
 /// Page GLA JB Json Builder Card (ID 380003).
 /// </summary>
-page 380003 "GLA JB Json Builder Card"
+page 380003 "GLA JB Json Structure Card"
 {
     ApplicationArea = All;
-    Caption = 'Json Builder Card';
+    Caption = 'Json Structure Card';
     PageType = Card;
     SourceTable = "GLA JB Json Structure";
 

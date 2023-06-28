@@ -14,7 +14,7 @@ codeunit 380002 "GLA JB Tests"
         // [WHEN] When
         // [THEN] Then
 
-        if JsonStructureService.GetSetOfJsonStructureMapByStructureCode('TEST', JsonStructureMap) then
+        if JsonStructureService.GetSetOfJsonStructureMap('TEST', JsonStructureMap) then
             exit;
         //    Error('dfdf');
     end;

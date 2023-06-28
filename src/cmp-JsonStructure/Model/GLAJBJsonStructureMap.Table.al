@@ -41,10 +41,23 @@ table 380001 "GLA JB Json Structure Map"
         {
             Caption = 'Data Type';
             DataClassification = CustomerContent;
+            trigger OnValidate()
+            begin
+                mJsonStructure.ValidateFldJsonStructureMapOnDataType(Rec);
+            end;
         }
         field(60; "Parent Key"; Text[50])
         {
             Caption = 'Parrent Key';
+            DataClassification = CustomerContent;
+            trigger OnValidate()
+            begin
+                mJsonStructure.ValidateFldJsonStructureMapOnParentKey(Rec);
+            end;
+        }
+        field(61; "Parent Line No."; Integer)
+        {
+            Caption = 'Parent Line No.';
             DataClassification = CustomerContent;
         }
         field(70; "Has Children"; Boolean)
@@ -78,6 +91,10 @@ table 380001 "GLA JB Json Structure Map"
         key(UK1; "Key", "Parent Key")
         {
             Unique = true;
+        }
+        key(Key1; "Structure Code", "Key", "Parent Key")
+        {
+
         }
     }
     fieldgroups

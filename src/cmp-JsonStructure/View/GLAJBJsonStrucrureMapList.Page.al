@@ -49,47 +49,25 @@ page 380001 "GLA JB Json Strucrure Map List"
                     begin
                         LookupParentKey();
                     end;
+
+                    trigger OnValidate()
+                    begin
+                        CurrPage.Update(false);
+                    end;
                 }
                 field(Status; Rec.Status)
                 {
                     ToolTip = 'Specifies the value of the Status field.';
+                }
+                field("Has Children"; Rec."Has Children")
+                {
+                    ToolTip = 'Specifies the value of the "Has Children" field.';
                 }
                 field(Indent; Rec."Indent Level")
                 {
                     ToolTip = 'Specifies the value of the Indent field.';
                 }
             }
-        }
-    }
-
-    actions
-    {
-        area(Processing)
-        {
-            group(Json)
-            {
-                Caption = 'Json';
-                action(ExportJson)
-                {
-                    Caption = 'Export';
-                    Image = Export;
-                    trigger OnAction()
-                    begin
-                        // TODO: Create function Create json file from structure
-                    end;
-                }
-
-                action(ImportJson)
-                {
-                    Caption = 'Import';
-                    Image = Import;
-                    trigger OnAction()
-                    begin
-                        // TODO: Create function create structure from file
-                    end;
-                }
-            }
-
         }
     }
     var
@@ -99,10 +77,11 @@ page 380001 "GLA JB Json Strucrure Map List"
     var
         JsonStructureMap: Record "GLA JB Json Structure Map";
     begin
-        if sJsonStructure.GetSetOfJsonStructureMapByStructureCode(Rec."Structure Code", JsonStructureMap) then begin
+        if sJsonStructure.GetSetOfJsonStructureMap(Rec."Structure Code", JsonStructureMap) then begin
             JsonStructureMap.SetFilter("Line No.", '<>%1', Rec."Line No.");
             if Page.RunModal(Page::"GLA JB Json Strucrure Map List", JsonStructureMap) = Action::LookupOK then begin
                 Rec."Parent Key" := JsonStructureMap."Key";
+                Rec."Parent Line No." := JsonStructureMap."Line No.";
             end;
         end;
     end;

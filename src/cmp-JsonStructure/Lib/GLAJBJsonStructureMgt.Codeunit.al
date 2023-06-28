@@ -78,6 +78,24 @@ codeunit 380000 "GLA JB Json Structure Mgt."
     end;
 
     /// <summary>
+    /// ValidateFldJsonStructureMapOnParentKey.
+    /// </summary>
+    /// <param name="JsonStructureMap">VAR Record "GLA JB Json Structure Map".</param>
+    procedure ValidateFldJsonStructureMapOnParentKey(var JsonStructureMap: Record "GLA JB Json Structure Map")
+    var
+        ParentJsonStructureMap: Record "GLA JB Json Structure Map";
+    begin
+        if ParentJsonStructureMap."Parent Key" = '' then begin
+            ParentJsonStructureMap."Line No." := 0;
+            exit;
+        end;
+
+        ParentJsonStructureMap.Get(JsonStructureMap."Structure Code", JsonStructureMap."Parent Line No.");
+        ParentJsonStructureMap.Validate("Has Children", true);
+        ParentJsonStructureMap.Value := '';
+        ParentJsonStructureMap.Modify(true);
+    end;
+    /// <summary>
     /// ValidateFldJsonStructureMapOnValue.
     /// </summary>
     /// <param name="JsonStructureMap">VAR Record "GLA JB Json Structure Map".</param>
@@ -85,5 +103,54 @@ codeunit 380000 "GLA JB Json Structure Mgt."
     begin
         if JsonStructureMap."Value" <> '' then
             JsonStructureMap.TestField("Has Children", false);
+
+        ConvertValueByDataType(JsonStructureMap);
+    end;
+
+    /// <summary>
+    /// ValidateFldJsonStructureMapOnDataType.
+    /// </summary>
+    /// <param name="JsonStructureMap">VAR Record "GLA JB Json Structure Map".</param>
+    procedure ValidateFldJsonStructureMapOnDataType(var JsonStructureMap: Record "GLA JB Json Structure Map")
+    begin
+        if not JsonStructureMap."Has Children" then
+            ConvertValueByDataType(JsonStructureMap);
+    end;
+
+    local procedure ConvertValueByDataType(var JsonStructureMap: Record "GLA JB Json Structure Map")
+    var
+        DataType: Enum "GLA JB Data Type";
+        ValuePattern: Text;
+        Regex: Codeunit Regex;
+        Matches: Record Matches temporary;
+    begin
+        case JsonStructureMap."Data Type" of
+            DataType::Integer, DataType::Biginteger, DataType::Option, DataType::Enum:
+                begin
+                    ValuePattern := '[0-9]+';
+                    if not Regex.IsMatch(JsonStructureMap.Value, ValuePattern) then
+                        JsonStructureMap.Value := '0';
+                    exit;
+
+                end;
+
+            DataType::Decimal:
+                begin
+                    ValuePattern := '[0-9]+,[0-9]+';
+                    if not Regex.IsMatch(JsonStructureMap.Value, ValuePattern) then
+                        JsonStructureMap.Value := '0,0';
+                    exit;
+                end;
+
+            DataType::Boolean:
+                begin
+                    ValuePattern := '[true,false,0,1]';
+                    if not Regex.IsMatch(JsonStructureMap.Value, ValuePattern) then
+                        JsonStructureMap.Value := 'false';
+                    exit;
+                end;
+            DataType::Code:
+                JsonStructureMap.Value := JsonStructureMap.Value.ToUpper();
+        end;
     end;
 }
