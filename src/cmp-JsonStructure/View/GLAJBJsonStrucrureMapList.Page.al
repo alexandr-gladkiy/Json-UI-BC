@@ -49,10 +49,19 @@ page 380001 "GLA JB Json Strucrure Map List"
                     begin
                         LookupParentKey();
                     end;
+
+                    trigger OnValidate()
+                    begin
+                        CurrPage.Update(false);
+                    end;
                 }
                 field(Status; Rec.Status)
                 {
                     ToolTip = 'Specifies the value of the Status field.';
+                }
+                field("Has Children"; Rec."Has Children")
+                {
+                    ToolTip = 'Specifies the value of the "Has Children" field.';
                 }
                 field(Indent; Rec."Indent Level")
                 {
@@ -72,6 +81,7 @@ page 380001 "GLA JB Json Strucrure Map List"
             JsonStructureMap.SetFilter("Line No.", '<>%1', Rec."Line No.");
             if Page.RunModal(Page::"GLA JB Json Strucrure Map List", JsonStructureMap) = Action::LookupOK then begin
                 Rec."Parent Key" := JsonStructureMap."Key";
+                Rec."Parent Line No." := JsonStructureMap."Line No.";
             end;
         end;
     end;

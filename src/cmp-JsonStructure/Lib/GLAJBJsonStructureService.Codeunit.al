@@ -99,11 +99,15 @@ codeunit 380001 "GLA JB Json Structure Service"
         TempBlob: Codeunit "Temp Blob";
         oStream: OutStream;
         iStream: InStream;
-        jsonTxt: Text;
+        FileName: Text;
     begin
         Json := CreateJson(JsonStructureCode);
-        Json.WriteTo(jsonTxt);
-        Message(jsonTxt);
+        TempBlob.CreateOutStream(oStream);
+        Json.WriteTo(oStream);
+        TempBlob.CreateInStream(iStream);
+
+        FileName := StrSubstNo('JsonStructure_%1.txt', JsonStructureCode);
+        DownloadFromStream(iStream, '', '', '', FileName);
     end;
 
     local procedure CreateJson(JsonStructureCode: Code[30]) MainJsonObj: JsonObject
@@ -116,6 +120,11 @@ codeunit 380001 "GLA JB Json Structure Service"
         MainJsonObj := GetJObject(GlobalJsonStructureMap);
     end;
 
+    /// <summary>
+    /// GetJObject.
+    /// </summary>
+    /// <param name="JsonStructureMap">VAR Record "GLA JB Json Structure Map".</param>
+    /// <returns>Return variable RetvalJObject of type JsonObject.</returns>
     procedure GetJObject(var JsonStructureMap: Record "GLA JB Json Structure Map") RetvalJObject: JsonObject
     var
         JObject: JsonObject;
@@ -127,7 +136,33 @@ codeunit 380001 "GLA JB Json Structure Service"
                     JObject := GetJObject(LocalJsonStructureMap);
                     RetvalJObject.Add(JsonStructureMap."Key", JObject);
                 end else
-                    RetvalJObject.Add(JsonStructureMap."Key", JsonStructureMap."Value")
+                    AddValueToJObjectByDataType(JsonStructureMap, RetvalJObject);
             until JsonStructureMap.Next() = 0;
+
+    end;
+
+    local procedure AddValueToJObjectByDataType(JsonStructureMap: Record "GLA JB Json Structure Map"; var JObject: JsonObject)
+    var
+        DataType: Enum "GLA JB Data Type";
+        JValue: JsonValue;
+        ValueBool: Boolean;
+        ValueInt: Integer;
+        ValueBigInt: BigInteger;
+    begin
+        JValue.SetValue(JsonStructureMap."Value");
+        case JsonStructureMap."Data Type" of
+            DataType::Code:
+                JObject.Add(JsonStructureMap."Key", JValue.AsCode());
+            DataType::Biginteger:
+                JObject.Add(JsonStructureMap."Key", JValue.AsBigInteger());
+            DataType::Integer:
+                JObject.Add(JsonStructureMap."Key", JValue.AsInteger());
+            DataType::Decimal:
+                JObject.Add(JsonStructureMap."Key", JValue.AsDecimal());
+            DataType::Boolean:
+                JObject.Add(JsonStructureMap."Key", JValue.AsBoolean());
+            else
+                JObject.Add(JsonStructureMap."Key", JValue.AsText());
+        end;
     end;
 }
