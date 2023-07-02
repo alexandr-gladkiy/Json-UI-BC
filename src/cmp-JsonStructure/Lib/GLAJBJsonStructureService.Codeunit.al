@@ -16,10 +16,11 @@ codeunit 380001 "GLA JB Json Structure Service"
     /// </summary>
     /// <param name="StructureCode">Code[30].</param>
     /// <param name="LineNo">Integer.</param>
-    procedure SetStructureMap(StructureCode: Code[30]; LineNo: Integer)
+    /// <returns>Return value of type Boolean.</returns>
+    procedure SetStructureMap(StructureCode: Code[30]; LineNo: Integer): Boolean
     begin
-        GlobalJsonStructureMap.Get(StructureCode, LineNo);
-        HasJsonStructureMap := true;
+        HasJsonStructureMap := GlobalJsonStructureMap.Get(StructureCode, LineNo);
+        exit(HasJsonStructureMap);
     end;
 
     /// <summary>
@@ -170,9 +171,7 @@ codeunit 380001 "GLA JB Json Structure Service"
     end;
 
     local procedure CreateJson(JsonStructureCode: Code[30]) MainJsonObj: JsonObject
-    var
     begin
-
         if not GetSetOfJsonStructureMapByParentKey(JsonStructureCode, '', GlobalJsonStructureMap) then
             exit; // TODO: Except Error Invalid Settings Structure
 
@@ -197,7 +196,6 @@ codeunit 380001 "GLA JB Json Structure Service"
                 end else
                     AddValueToJObjectByDataType(JsonStructureMap, RetvalJObject);
             until JsonStructureMap.Next() = 0;
-
     end;
 
     local procedure AddValueToJObjectByDataType(JsonStructureMap: Record "GLA JB Json Structure Map"; var JObject: JsonObject)
@@ -223,5 +221,88 @@ codeunit 380001 "GLA JB Json Structure Service"
             else
                 JObject.Add(JsonStructureMap."Key", JValue.AsText());
         end;
+    end;
+
+    /// <summary>
+    /// GetConvertStructureMapValueByDataType.
+    /// </summary>
+    /// <param name="InputValue">Text.</param>
+    /// <param name="DataType">Enum "GLA JB Data Type".</param>
+    /// <returns>Return variable ConvertValue of type Text.</returns>
+    procedure GetConvertStructureMapValueByDataType(InputValue: Text; DataType: Enum "GLA JB Data Type") ConvertValue: Text
+    var
+        ValuePattern: Text;
+        Regex: Codeunit Regex;
+        Matches: Record Matches temporary;
+    begin
+        InputValue := InputValue.Trim();
+        case DataType of
+            DataType::Integer, DataType::Biginteger, DataType::Option, DataType::Enum:
+                begin
+                    ValuePattern := '[0-9]+';
+                    if not Regex.IsMatch(InputValue, ValuePattern) then
+                        ConvertValue := '0';
+                    exit;
+
+                end;
+
+            DataType::Decimal:
+                begin
+                    ValuePattern := '[0-9]+,[0-9]+';
+                    if not Regex.IsMatch(InputValue, ValuePattern) then
+                        ConvertValue := '0,00';
+                    exit;
+                end;
+
+            DataType::Boolean:
+                begin
+                    ValuePattern := '[true,false,0,1]';
+                    if not Regex.IsMatch(InputValue, ValuePattern) then
+                        ConvertValue := 'false';
+                    exit;
+                end;
+            DataType::Code:
+                ConvertValue := InputValue.ToUpper();
+        end;
+    end;
+
+    /// <summary>
+    /// UpdateIndentStructureMapByStructureCode.
+    /// </summary>
+    /// <param name="StructureCode">Code[30].</param>
+    procedure UpdateIndentAndSortingStructureMapByStructureCode(StructureCode: Code[30])
+    var
+        SortingOrder: Integer;
+    begin
+        if StructureCode = '' then
+            exit;
+        SortingOrder := 1;
+        SetIndentAndSortingStructureMapByParentKey(StructureCode, '', 0, SortingOrder);
+    end;
+
+    local procedure SetIndentAndSortingStructureMapByParentKey(StructureNo: Code[30]; ParentKey: Text[50]; IndentLevel: Integer; var SortingOrder: Integer)
+    var
+        JsonStructureMap: Record "GLA JB Json Structure Map";
+    begin
+        if not GetSetOfJsonStructureMapByParentKey(StructureNo, ParentKey, JsonStructureMap) then
+            exit;
+
+        JsonStructureMap.FindSet(true);
+        repeat
+            JsonStructureMap."Indent Level" := IndentLevel;
+            JsonStructureMap."Sorting Order" := SortingOrder;
+            JsonStructureMap.Modify(true);
+            SortingOrder += 1;
+            SetIndentAndSortingStructureMapByParentKey(StructureNo, JsonStructureMap."Key", IndentLevel + 1, SortingOrder);
+        until JsonStructureMap.Next() = 0;
+    end;
+
+    /// <summary>
+    /// UpdateStructureMapSortingOrderByStructureCode.
+    /// </summary>
+    /// <param name="StructureCode">Code[30].</param>
+    procedure UpdateStructureMapSortingOrderByStructureCode(StructureCode: Code[30])
+    begin
+        // TODO: Create function
     end;
 }

@@ -27,6 +27,10 @@ table 380001 "GLA JB Json Structure Map"
         {
             Caption = 'Key';
             DataClassification = CustomerContent;
+            trigger OnValidate()
+            begin
+                mJsonStructure.ValidateFldJsonStructureMapOnKey(Rec, xRec);
+            end;
         }
         field(40; "Value"; Text[1024])
         {
@@ -93,7 +97,15 @@ table 380001 "GLA JB Json Structure Map"
         {
             Unique = true;
         }
+        key(UK2; "Line No.", "Parent Line No.")
+        {
+            Unique = true;
+        }
         key(Key1; "Structure Code", "Key", "Parent Key")
+        {
+
+        }
+        key(Key2; "Structure Code", "Sorting Order")
         {
 
         }
@@ -117,7 +129,7 @@ table 380001 "GLA JB Json Structure Map"
         OnBeforeOnInsert(Rec, IsHandled);
         if not IsHandled then
             mJsonStructure.ValidateTblJsonStructureMapOnInsert(Rec);
-        OnAfterOnInsert(Rec, IsHandled);
+        OnAfterOnInsert(Rec, xRec);
     end;
 
     trigger OnModify()
@@ -128,7 +140,7 @@ table 380001 "GLA JB Json Structure Map"
         OnBeforeOnModify(Rec, IsHandled);
         if not IsHandled then
             mJsonStructure.ValidateTblJsonStructureMapOnModify(Rec);
-        OnAfterOnModify(Rec, IsHandled);
+        OnAfterOnModify(Rec, xRec);
     end;
 
     trigger OnDelete()
@@ -159,12 +171,12 @@ table 380001 "GLA JB Json Structure Map"
     end;
 
     [IntegrationEvent(false, false)]
-    local procedure OnAfterOnInsert(var JsonStructureMap: Record "GLA JB Json Structure Map"; var IsHandled: Boolean)
+    local procedure OnAfterOnInsert(var JsonStructureMap: Record "GLA JB Json Structure Map"; xJsonStructureMap: Record "GLA JB Json Structure Map")
     begin
     end;
 
     [IntegrationEvent(false, false)]
-    local procedure OnAfterOnModify(var JsonStructureMap: Record "GLA JB Json Structure Map"; var IsHandled: Boolean)
+    local procedure OnAfterOnModify(var JsonStructureMap: Record "GLA JB Json Structure Map"; xJsonStructureMap: Record "GLA JB Json Structure Map")
     begin
     end;
 
