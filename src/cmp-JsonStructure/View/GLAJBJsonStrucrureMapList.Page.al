@@ -8,7 +8,9 @@ page 380001 "GLA JB Json Strucrure Map List"
     Caption = 'Json Strucrure Map List';
     PageType = List;
     SourceTable = "GLA JB Json Structure Map";
+    SourceTableView = sorting("Structure Code", "Sorting Order");
     UsageCategory = Lists;
+
     layout
     {
         area(content)
@@ -44,6 +46,7 @@ page 380001 "GLA JB Json Strucrure Map List"
                 field("Parent Key"; Rec."Parent Key")
                 {
                     ToolTip = 'Specifies the value of the Parrent Key field.';
+                    Editable = false;
 
                     trigger OnDrillDown()
                     begin
@@ -72,6 +75,10 @@ page 380001 "GLA JB Json Strucrure Map List"
                 field(Indent; Rec."Indent Level")
                 {
                     ToolTip = 'Specifies the value of the Indent field.';
+                }
+                field("Sorting Order"; Rec."Sorting Order")
+                {
+                    ToolTip = 'Specifies the value of the "Sorting Order" field.';
                 }
             }
         }
@@ -113,6 +120,22 @@ page 380001 "GLA JB Json Strucrure Map List"
                     end;
                 }
             }
+            group("Indent Level")
+            {
+                Caption = 'Indent Level';
+                Image = Indent;
+
+                action("Update")
+                {
+                    Caption = 'Update';
+                    Image = UpdateDescription;
+                    trigger OnAction()
+                    begin
+                        sJsonStructure.UpdateIndentAndSortingStructureMapByStructureCode(Rec.GetFilter("Structure Code"));
+                        CurrPage.Update(false);
+                    end;
+                }
+            }
 
         }
     }
@@ -123,6 +146,16 @@ page 380001 "GLA JB Json Strucrure Map List"
     trigger OnOpenPage()
     begin
         IsActionGroupJsonVisible := Rec.GetFilter("Structure Code") <> '';
+    end;
+
+    trigger OnInsertRecord(BelowxRec: Boolean): Boolean
+    begin
+        CurrPage.Update(false);
+    end;
+
+    trigger OnModifyRecord(): Boolean
+    begin
+        CurrPage.Update(false);
     end;
 
     local procedure LookupParentKey()

@@ -6,6 +6,7 @@ codeunit 380000 "GLA JB Json Structure Mgt."
 {
     var
         sJsonStructure: Codeunit "GLA JB Json Structure Service";
+        GlobalJsonStructureMap: Record "GLA JB Json Structure Map";
 
     /// <summary>
     /// ValidateTblJsonStructureOnInsert.
@@ -106,6 +107,25 @@ codeunit 380000 "GLA JB Json Structure Mgt."
         ParentJsonStructureMap.Validate("Data Type", ParentJsonStructureMap."Data Type"::"None");
         ParentJsonStructureMap.Modify(true);
     end;
+
+    /// <summary>
+    /// ValidateFldJsonStructureMapOnKey.
+    /// </summary>
+    /// <param name="JsonStructureMap">VAR Record "GLA JB Json Structure Map".</param>
+    /// <param name="xJsonStructureMap">Record "GLA JB Json Structure Map".</param>
+    procedure ValidateFldJsonStructureMapOnKey(var JsonStructureMap: Record "GLA JB Json Structure Map"; xJsonStructureMap: Record "GLA JB Json Structure Map")
+    begin
+        if JsonStructureMap."Key" = xJsonStructureMap."Key" then
+            exit;
+
+        if JsonStructureMap."Key" = '' then
+            Error('Key cannot be empty.');
+
+        if sJsonStructure.SetStructureMap(JsonStructureMap."Structure Code", JsonStructureMap."Line No.") then
+            if sJsonStructure.GetSetOfJsonStructureMapByParentKey(JsonStructureMap."Structure Code", xJsonStructureMap."Key", GlobalJsonStructureMap) then
+                GlobalJsonStructureMap.ModifyAll("Parent Key", JsonStructureMap."Key", true);
+    end;
+
     /// <summary>
     /// ValidateFldJsonStructureMapOnValue.
     /// </summary>
@@ -114,8 +134,7 @@ codeunit 380000 "GLA JB Json Structure Mgt."
     begin
         if JsonStructureMap."Value" <> '' then
             JsonStructureMap.TestField("Has Children", false);
-
-        ConvertValueByDataType(JsonStructureMap);
+        JsonStructureMap."Value" := sJsonStructure.GetConvertStructureMapValueByDataType(JsonStructureMap."Value", JsonStructureMap."Data Type");
     end;
 
     /// <summary>
@@ -124,44 +143,8 @@ codeunit 380000 "GLA JB Json Structure Mgt."
     /// <param name="JsonStructureMap">VAR Record "GLA JB Json Structure Map".</param>
     procedure ValidateFldJsonStructureMapOnDataType(var JsonStructureMap: Record "GLA JB Json Structure Map")
     begin
-        if not JsonStructureMap."Has Children" then
-            ConvertValueByDataType(JsonStructureMap);
-    end;
-
-    local procedure ConvertValueByDataType(var JsonStructureMap: Record "GLA JB Json Structure Map")
-    var
-        DataType: Enum "GLA JB Data Type";
-        ValuePattern: Text;
-        Regex: Codeunit Regex;
-        Matches: Record Matches temporary;
-    begin
-        case JsonStructureMap."Data Type" of
-            DataType::Integer, DataType::Biginteger, DataType::Option, DataType::Enum:
-                begin
-                    ValuePattern := '[0-9]+';
-                    if not Regex.IsMatch(JsonStructureMap.Value, ValuePattern) then
-                        JsonStructureMap.Value := '0';
-                    exit;
-
-                end;
-
-            DataType::Decimal:
-                begin
-                    ValuePattern := '[0-9]+,[0-9]+';
-                    if not Regex.IsMatch(JsonStructureMap.Value, ValuePattern) then
-                        JsonStructureMap.Value := '0,0';
-                    exit;
-                end;
-
-            DataType::Boolean:
-                begin
-                    ValuePattern := '[true,false,0,1]';
-                    if not Regex.IsMatch(JsonStructureMap.Value, ValuePattern) then
-                        JsonStructureMap.Value := 'false';
-                    exit;
-                end;
-            DataType::Code:
-                JsonStructureMap.Value := JsonStructureMap.Value.ToUpper();
-        end;
+        if JsonStructureMap."Value" <> '' then
+            JsonStructureMap.TestField("Has Children", false);
+        JsonStructureMap."Value" := sJsonStructure.GetConvertStructureMapValueByDataType(JsonStructureMap."Value", JsonStructureMap."Data Type");
     end;
 }

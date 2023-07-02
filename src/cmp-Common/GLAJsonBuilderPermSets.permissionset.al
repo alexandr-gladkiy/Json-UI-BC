@@ -1,8 +1,8 @@
 /// <summary>
 
-/// Unknown GLAJsonBuilder (ID 380000). 
+/// Unknown GLAJsonBuilder (ID 380000).  
 
-/// </summary>
+/// </summary> 
 permissionset 380000 "GLAJsonBuilder"
 {
     Assignable = true;
@@ -16,5 +16,6 @@ permissionset 380000 "GLAJsonBuilder"
         page "GLA JB Json Structure Card" = X,
         page "GLA JB Json Strucrure Map List" = X,
         page "GLA JB Json Structure List" = X,
-        page "GLA JB Role Center" = X;
+        page "GLA JB Role Center" = X,
+        codeunit "GLA JB Json Struct Event Subsc" = X;
 }
